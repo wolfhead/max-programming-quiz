@@ -1,15 +1,18 @@
-.PHONY: verify-data test-template clean
+.PHONY: compile submit verify test-template clean
 
-CXX ?= g++
+QUIZZES := quizzes/quiz_template quizzes/quiz_001
 
-verify-data:
-	$(CXX) -std=c++17 -Wall -Wextra -pedantic -O2 tools/verify_quiz_001_reference.cpp -o /tmp/verify_quiz_001_reference
-	/tmp/verify_quiz_001_reference
+compile:
+	for quiz in $(QUIZZES); do $(MAKE) -C $$quiz compile; done
+
+submit:
+	for quiz in $(QUIZZES); do $(MAKE) -C $$quiz submit; done
+
+verify:
+	for quiz in $(QUIZZES); do $(MAKE) -C $$quiz verify; done
 
 test-template:
-	$(MAKE) -C quizzes/quiz_template test
+	$(MAKE) -C quizzes/quiz_template submit
 
 clean:
-	$(MAKE) -C quizzes/quiz_template clean
-	$(MAKE) -C quizzes/quiz_001 clean
-	rm -f /tmp/verify_quiz_001_reference
+	for quiz in $(QUIZZES); do $(MAKE) -C $$quiz clean; done

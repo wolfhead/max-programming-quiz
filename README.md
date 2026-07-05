@@ -5,10 +5,14 @@
 ## 核心约定
 
 - 一个 quiz 一个文件夹：`quizzes/quiz_001`、`quizzes/quiz_002`。
+- 每个 quiz 目录是自包含的工作目录，可以被单独复制、编译和评测。
 - 学生只修改每题目录下的 `student/solution.cpp`。
 - 函数签名由题目决定，例如 `int quiz_1(int inputA)`。
-- 评测入口、测试数据、Makefile 由出题者维护。
-- 最终交给学生时，可以只给题目目录里的题面、函数声明、学生模板、测试入口和测试数据，不包含参考答案。
+- 每个 quiz 都提供 `make compile`、`make submit`、`make verify`。
+- `make submit` 用学生解运行测试，并输出通过数、用时和内存。
+- `make verify` 用同目录的参考解运行测试，用于出题者确认答案和数据无误。
+- 参考解可以留在 `reference/solution.cpp`，学生正常只需要修改 `student/solution.cpp`。
+- 根目录可以有公共代码库、工具链和模板，但学生做题不依赖根目录命令。
 
 ## 目录结构
 
@@ -22,6 +26,8 @@
 │   │   ├── README.md
 │   │   ├── include
 │   │   │   └── quiz.hpp
+│   │   ├── reference
+│   │   │   └── solution.cpp
 │   │   ├── student
 │   │   │   └── solution.cpp
 │   │   ├── tests
@@ -32,13 +38,15 @@
 │       ├── README.md
 │       ├── include
 │       │   └── quiz.hpp
+│       ├── reference
+│       │   └── solution.cpp
 │       ├── student
 │       │   └── solution.cpp
 │       ├── tests
 │       │   └── cases.txt
 │       └── main.cpp
-└── tools
-    └── verify_quiz_001_reference.cpp
+└── progress
+    └── README.md
 ```
 
 ## 出题流程
@@ -46,10 +54,12 @@
 1. 复制 `quizzes/quiz_template` 为新的题目目录，例如 `quizzes/quiz_002`。
 2. 修改 `README.md` 写题面、输入输出、样例和数学提示。
 3. 修改 `include/quiz.hpp` 与 `student/solution.cpp` 中的函数签名。
-4. 修改 `main.cpp` 读取测试数据并调用学生函数。
-5. 修改 `tests/cases.txt` 写测试数据。
-6. 用参考实现本地验证测试数据正确，再删除或不要交付参考实现。
-7. 在题目目录运行 `make test`，确认评测入口能正常工作。
+4. 修改 `reference/solution.cpp` 写参考解。
+5. 修改 `main.cpp` 读取测试数据并调用学生函数。
+6. 修改 `tests/cases.txt` 写测试数据。
+7. 在题目目录运行 `make verify`，确认参考解和测试数据正确。
+8. 在题目目录运行 `make compile`，确认学生模板可以编译。
+9. 在题目目录运行 `make submit`，确认学生提交流程可用。
 
 ## 学生使用方式
 
@@ -57,13 +67,17 @@
 
 ```bash
 cd quizzes/quiz_001
-make test
+make compile
+make submit
 ```
 
 学生完成 `student/solution.cpp` 后，如果所有测试通过，会看到：
 
 ```text
-All tests passed.
+Verdict: Accepted
+Passed: 12/12
+Time: 0.123 ms
+Memory: 1024 KB
 ```
 
 ## 难度与进度记录建议

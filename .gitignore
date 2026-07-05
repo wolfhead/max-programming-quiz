@@ -1,4 +1,5 @@
 quiz_test
+.build/
 *.o
 *.out
 .DS_Store

@@ -1,11 +1,32 @@
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <sys/resource.h>
+#include <chrono>
 
 #include "quiz.hpp"
 
+namespace {
+
+long long current_memory_kb() {
+    rusage usage{};
+    if (getrusage(RUSAGE_SELF, &usage) != 0) {
+        return -1;
+    }
+#ifdef __APPLE__
+    return usage.ru_maxrss / 1024;
+#else
+    return usage.ru_maxrss;
+#endif
+}
+
+}  // namespace
+
 int main() {
+    const auto start = std::chrono::high_resolution_clock::now();
+
     std::ifstream cases("tests/cases.txt");
     if (!cases) {
         std::cerr << "error: cannot open tests/cases.txt\n";
@@ -41,10 +62,22 @@ int main() {
     }
 
     if (passed != total) {
-        std::cerr << passed << "/" << total << " tests passed.\n";
+        const auto end = std::chrono::high_resolution_clock::now();
+        const auto elapsed_ms =
+            std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0;
+        std::cerr << "Verdict: Wrong Answer\n";
+        std::cerr << "Passed: " << passed << "/" << total << "\n";
+        std::cerr << "Time: " << std::fixed << std::setprecision(3) << elapsed_ms << " ms\n";
+        std::cerr << "Memory: " << current_memory_kb() << " KB\n";
         return 1;
     }
 
-    std::cout << "All tests passed. (" << total << "/" << total << ")\n";
+    const auto end = std::chrono::high_resolution_clock::now();
+    const auto elapsed_ms =
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0;
+    std::cout << "Verdict: Accepted\n";
+    std::cout << "Passed: " << passed << "/" << total << "\n";
+    std::cout << "Time: " << std::fixed << std::setprecision(3) << elapsed_ms << " ms\n";
+    std::cout << "Memory: " << current_memory_kb() << " KB\n";
     return 0;
 }

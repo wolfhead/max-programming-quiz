@@ -46,3 +46,16 @@ return = 6
 ## 给学生的提示
 
 如果 `inputA` 已经是偶数，答案不是它自己，而是下一个偶数。
+
+## 本题命令
+
+```bash
+make compile
+make submit
+```
+
+出题者可以使用：
+
+```bash
+make verify
+```

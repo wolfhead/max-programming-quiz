@@ -33,3 +33,16 @@ return = 1
 ## 给学生的提示
 
 先想清楚数学规则，再把规则翻译成 C++ 表达式。
+
+## 本题命令
+
+```bash
+make compile
+make submit
+```
+
+出题者可以使用：
+
+```bash
+make verify
+```
