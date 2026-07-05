@@ -19,9 +19,22 @@
 ```text
 .
 ├── AGENTS.md
+├── AUTHORING.md
 ├── README.md
 ├── quizzes
 │   ├── quiz_001
+│   │   ├── Makefile
+│   │   ├── README.md
+│   │   ├── include
+│   │   │   └── quiz.hpp
+│   │   ├── reference
+│   │   │   └── solution.cpp
+│   │   ├── student
+│   │   │   └── solution.cpp
+│   │   ├── tests
+│   │   │   └── cases.txt
+│   │   └── main.cpp
+│   ├── quiz_002
 │   │   ├── Makefile
 │   │   ├── README.md
 │   │   ├── include
@@ -50,6 +63,8 @@
 ```
 
 ## 出题流程
+
+详细规范见 `AUTHORING.md`。
 
 1. 复制 `quizzes/quiz_template` 为新的题目目录，例如 `quizzes/quiz_002`。
 2. 修改 `README.md` 写题面、输入输出、样例和数学提示。

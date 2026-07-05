@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 #include <sys/resource.h>
-#include <chrono>
+#include <ctime>
 
 #include "quiz.hpp"
 
@@ -25,7 +25,7 @@ long long current_memory_kb() {
 }  // namespace
 
 int main() {
-    const auto start = std::chrono::high_resolution_clock::now();
+    const std::clock_t start = std::clock();
 
     std::ifstream cases("tests/cases.txt");
     if (!cases) {
@@ -62,9 +62,8 @@ int main() {
     }
 
     if (passed != total) {
-        const auto end = std::chrono::high_resolution_clock::now();
-        const auto elapsed_ms =
-            std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0;
+        const double elapsed_ms =
+            1000.0 * static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC;
         std::cerr << "Verdict: Wrong Answer\n";
         std::cerr << "Passed: " << passed << "/" << total << "\n";
         std::cerr << "Time: " << std::fixed << std::setprecision(3) << elapsed_ms << " ms\n";
@@ -72,9 +71,8 @@ int main() {
         return 1;
     }
 
-    const auto end = std::chrono::high_resolution_clock::now();
-    const auto elapsed_ms =
-        std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0;
+    const double elapsed_ms =
+        1000.0 * static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC;
     std::cout << "Verdict: Accepted\n";
     std::cout << "Passed: " << passed << "/" << total << "\n";
     std::cout << "Time: " << std::fixed << std::setprecision(3) << elapsed_ms << " ms\n";

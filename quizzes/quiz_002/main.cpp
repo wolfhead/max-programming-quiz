@@ -1,10 +1,11 @@
+#include <ctime>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <sys/resource.h>
-#include <ctime>
+#include <vector>
 
 #include "quiz.hpp"
 
@@ -43,27 +44,41 @@ int main() {
         }
 
         std::istringstream input(line);
-        int inputA = 0;
-        int expected = 0;
-        if (!(input >> inputA >> expected)) {
+        int n = 0;
+        if (!(input >> n) || n < 2) {
             std::cerr << "error: invalid test case: " << line << "\n";
             return 2;
         }
 
+        std::vector<int> numbers(n);
+        for (int i = 0; i < n; ++i) {
+            if (!(input >> numbers[i])) {
+                std::cerr << "error: invalid test case: " << line << "\n";
+                return 2;
+            }
+        }
+
+        int expected = 0;
+        if (!(input >> expected)) {
+            std::cerr << "error: missing expected value: " << line << "\n";
+            return 2;
+        }
+
         ++total;
-        const int actual = quiz_template(inputA);
+        const int actual = quiz_2(numbers);
         if (actual == expected) {
             ++passed;
             continue;
         }
 
-        std::cerr << "case " << total << " failed: inputA=" << inputA
-                  << ", expected=" << expected << ", actual=" << actual << "\n";
+        std::cerr << "case " << total << " failed: expected=" << expected
+                  << ", actual=" << actual << "\n";
     }
 
+    const double elapsed_ms =
+        1000.0 * static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC;
+
     if (passed != total) {
-        const double elapsed_ms =
-            1000.0 * static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC;
         std::cerr << "Verdict: Wrong Answer\n";
         std::cerr << "Passed: " << passed << "/" << total << "\n";
         std::cerr << "Time: " << std::fixed << std::setprecision(3) << elapsed_ms << " ms\n";
@@ -71,8 +86,6 @@ int main() {
         return 1;
     }
 
-    const double elapsed_ms =
-        1000.0 * static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC;
     std::cout << "Verdict: Accepted\n";
     std::cout << "Passed: " << passed << "/" << total << "\n";
     std::cout << "Time: " << std::fixed << std::setprecision(3) << elapsed_ms << " ms\n";
