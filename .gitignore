@@ -1,0 +1,4 @@
+quiz_test
+*.o
+*.out
+.DS_Store
